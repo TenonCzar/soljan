@@ -1,0 +1,4 @@
+<template>
+    Hope
+    <AppOnSwiper />
+</template>
