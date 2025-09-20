@@ -31,7 +31,11 @@ async function fetchCoins() {
       "&sparkline=true" +
       "&price_change_percentage=1h,24h,7d";
 
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: {
+        "x-cg-demo-api-key": process.env.COINGECKO_API_KEY, // store securely
+      },
+    });
 
     if (res.status === 429) {
       console.warn("⚠️ Rate limited by CoinGecko. Increasing backoff.");
