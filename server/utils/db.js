@@ -14,7 +14,11 @@ export async function initDB() {
       username TEXT UNIQUE,
       email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      balance REAL DEFAULT 0,
+      account TEXT DEFAULT 'STANDARD',
+      last_checkin TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      checkin REAL DEFAULT 0
     )
   `);
   await db.execute(`
@@ -23,6 +27,8 @@ export async function initDB() {
       user_id INTEGER NOT NULL,
       currency TEXT NOT NULL,
       address TEXT NOT NULL,
+      ngnbalance REAL DEFAULT 0 NOT NULL,
+      coinbal INTEGER DEFAULT 0 NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `);

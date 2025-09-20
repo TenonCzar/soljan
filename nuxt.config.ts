@@ -6,5 +6,7 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   vite: { plugins: [tailwindcss()] },
   modules: ["@nuxt/eslint", "@nuxt/icon", "@nuxt/fonts", "nuxt-swiper"],
-
+  runtimeConfig: {
+    coingeckoApiKey: process.env.COINGECKO_API_KEY,
+  },
 });
