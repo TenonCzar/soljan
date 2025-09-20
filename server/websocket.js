@@ -1,3 +1,4 @@
+// server/websocket.js
 import { WebSocketServer } from "ws";
 import fetch from "node-fetch";
 import http from "http";
@@ -7,100 +8,52 @@ const PORT = process.env.PORT || 4000;
 const server = http.createServer();
 const wss = new WebSocketServer({ server });
 
-let snapshot = {};
+let coins = []; // cached snapshot
 
-// ✅ Fetch detailed coin info (with 24h % change, market cap, volume)
+// Function to fetch coin data from CoinGecko
 async function fetchCoins() {
   try {
     const url =
-      "https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana,tron,tether,usd-coin,sui,binancecoin";
+      "https://api.coingecko.com/api/v3/coins/markets" +
+      "?vs_currency=usd" +
+      "&ids=bitcoin,ethereum,solana,tron,tether,usd-coin,sui,binancecoin" +
+      "&order=market_cap_desc" +
+      "&per_page=10&page=1" +
+      "&sparkline=true" + // get chart data
+      "&price_change_percentage=1h,24h,7d"; // include % changes
+
     const res = await fetch(url);
-    const { data } = await res.json();
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-    // Map only the fields you care about
-    snapshot = data.map((coin) => ({
-      id: coin.id,
-      symbol: coin.symbol,
-      name: coin.name,
-      priceUsd: parseFloat(coin.priceUsd),
-      marketCapUsd: parseFloat(coin.marketCapUsd),
-      volumeUsd24Hr: parseFloat(coin.volumeUsd24Hr),
-      changePercent24Hr: parseFloat(coin.changePercent24Hr),
-      supply: parseFloat(coin.supply),
-    }));
+    coins = data; // cache snapshot
 
-    broadcast(snapshot);
+    // broadcast to all connected clients
+    wss.clients.forEach((client) => {
+      if (client.readyState === 1) {
+        client.send(JSON.stringify(coins));
+      }
+    });
+
+    console.log("✅ Updated coin data from CoinGecko");
   } catch (err) {
-    console.error("CoinCap fetch error:", err);
+    console.error("❌ CoinGecko fetch error:", err.message);
   }
 }
 
-// ✅ Fetch chart data (candlesticks) for one coin
-async function fetchChart(coin = "bitcoin", interval = "m15") {
-  try {
-    const url = `https://api.coincap.io/v2/candles?exchange=binance&interval=${interval}&baseId=${coin}&quoteId=tether`;
-    const res = await fetch(url);
-    const { data } = await res.json();
-    return data; // [{period, open, high, low, close, volume}]
-  } catch (err) {
-    console.error("Chart fetch error:", err);
-    return [];
-  }
-}
-
-// ✅ Broadcast to all connected clients
-function broadcast(msg) {
-  const str = JSON.stringify(msg);
-  wss.clients.forEach((client) => {
-    if (client.readyState === 1) {
-      client.send(str);
-    }
-  });
-}
-
-// ✅ Keep snapshot refreshed every 15s
-setInterval(fetchCoins, 15_000);
+// Fetch immediately on startup
 fetchCoins();
+// Refresh every 60 seconds
+setInterval(fetchCoins, 60_000);
 
-// ✅ WebSocket price stream (real-time ticker)
-const priceSocket = new WebSocket(
-  "wss://ws.coincap.io/prices?assets=bitcoin,ethereum,solana,tron,tether,usd-coin,sui,binancecoin"
-);
-
-priceSocket.onmessage = (msg) => {
-  const updates = JSON.parse(msg.data);
-
-  // Merge updates into snapshot
-  snapshot = snapshot.map((coin) => {
-    if (updates[coin.id]) {
-      coin.priceUsd = parseFloat(updates[coin.id]);
-    }
-    return coin;
-  });
-
-  broadcast(snapshot);
-};
-
-wss.on("connection", async (ws) => {
-  console.log("✅ Client connected");
+// WebSocket connection handler
+wss.on("connection", (ws) => {
+  console.log("📡 Client connected");
 
   // Send latest snapshot immediately
-  if (snapshot.length > 0) {
-    ws.send(JSON.stringify(snapshot));
+  if (coins.length > 0) {
+    ws.send(JSON.stringify(coins));
   }
-
-  // Example: if client requests chart
-  ws.on("message", async (msg) => {
-    try {
-      const { type, coin, interval } = JSON.parse(msg);
-      if (type === "chart") {
-        const chart = await fetchChart(coin, interval);
-        ws.send(JSON.stringify({ type: "chart", coin, chart }));
-      }
-    } catch (err) {
-      console.error("Message error:", err);
-    }
-  });
 
   ws.on("close", () => {
     console.log("🔌 Client disconnected");
@@ -108,5 +61,5 @@ wss.on("connection", async (ws) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🚀 WebSocket server running on port ${PORT}`);
+  console.log(`🚀 WebSocket server running on ws://localhost:${PORT}`);
 });
