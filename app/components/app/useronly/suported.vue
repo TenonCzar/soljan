@@ -13,15 +13,14 @@ const coins = [
   { id: "usd-coin", symbol: "USDC", img: "/images/coins/usdc.svg", idx: 6 },
 ];
 
-const user = useState("user"); // global reactive user
-const livePrices = ref({}); // { bitcoin: 40000, ethereum: 2000 ... }
+const user = useState("user"); 
+const livePrices = ref({}); 
 let ws;
 
 function navigateTo(url) {
   router.push(url);
 }
 
-// Smoothly animate ngnbalance changes
 function animateBalance(idx, target) {
   if (!user.value?.addresses?.[idx]) return;
 
@@ -59,7 +58,7 @@ async function updateBalance(idx, coinId, coinbal, price) {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ₦{token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         coinId,
@@ -129,7 +128,7 @@ onBeforeUnmount(() => {
 
       <div class="numbers flex flex-col items-end ml-auto">
         <div class="balance rubik text-sm">
-          ₦{{ user?.addresses[coin.idx]?.ngnbalance || "0.00" }}
+          ₦{{ Number(user?.addresses[coin.idx]?.ngnbalance).toLocaleString() || "0.00" }}
         </div>
         <div class="price text-xs font-thin rubik">
           {{ user?.addresses[coin.idx]?.coinbal || "0" }}
