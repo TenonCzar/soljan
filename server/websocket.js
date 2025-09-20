@@ -24,7 +24,7 @@ async function fetchCoins() {
   try {
     const url =
       "https://api.coingecko.com/api/v3/coins/markets" +
-      "?vs_currency=usd" +
+      "?vs_currency=ngn" +
       "&ids=bitcoin,ethereum,solana,tron,tether,usd-coin,sui,binancecoin" +
       "&order=market_cap_desc" +
       "&per_page=10&page=1" +
@@ -43,7 +43,7 @@ async function fetchCoins() {
       return;
     }
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error(`HTTP ₦{res.status}`);
 
     const data = await res.json();
     coins = data;
@@ -78,5 +78,5 @@ wss.on("connection", (ws) => {
 });
 
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 WebSocket + HTTP server running on port ${PORT}`);
+  console.log(`🚀 WebSocket + HTTP server running on port ₦{PORT}`);
 });

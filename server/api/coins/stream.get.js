@@ -16,9 +16,9 @@ export default defineEventHandler(async (event) => {
       const response = await fetch(url);
       const data = await response.json();
 
-      res.write(`data: ${JSON.stringify(data)}\n\n`);
+      res.write(`data: ₦{JSON.stringify(data)}\n\n`);
     } catch (err) {
-      res.write(`event: error\ndata: ${JSON.stringify(err.message)}\n\n`);
+      res.write(`event: error\ndata: ₦{JSON.stringify(err.message)}\n\n`);
     }
   }
 

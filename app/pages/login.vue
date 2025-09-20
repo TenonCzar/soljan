@@ -1,5 +1,7 @@
 <template>
-  <div class="min-w-screen min-h-screen bg-use text-white p-8 flex flex-col items-center">
+  <div
+    class="min-w-screen min-h-screen bg-use text-white p-8 flex flex-col items-center"
+  >
     <h1 class="roma text-2xl mb-20">Login</h1>
     <form
       class="border p-4 rounded place-self-center flex flex-col gap-3 w-full max-w-[600px]"
@@ -36,35 +38,36 @@
       </button>
       <p v-if="error" class="error">{{ error }}</p>
       <p class="login text-xs mx-auto">
-        New To Soljan? <NuxtLink to="/signup" class="text-lime-500">Create Account</NuxtLink>
+        New To Soljan?
+        <NuxtLink to="/signup" class="text-lime-500">Create Account</NuxtLink>
       </p>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useAuth } from '~/composables/useAuth';
+import { ref } from "vue";
+import { useAuth } from "~/composables/useAuth";
 
-const form = ref({ email: '', password: '' });
+const form = ref({ email: "", password: "" });
 const loading = ref(false);
-const error = ref('');
+const error = ref("");
 const { setAuth, updateDynamicFields } = useAuth();
 
 async function handleLogin() {
   loading.value = true;
-  error.value = '';
+  error.value = "";
   try {
-    const response = await $fetch('/api/login', {
-      method: 'POST',
+    const response = await $fetch("/api/login", {
+      method: "POST",
       body: form.value,
     });
     if (response.success && response.token) {
       // Fetch user data to get static fields
-      const userData = await $fetch('/api/me', {
-        method: 'GET',
+      const userData = await $fetch("/api/me", {
+        method: "GET",
         headers: {
-          Authorization: `Bearer ${response.token}`,
+          Authorization: `Bearer ₦{response.token}`,
         },
       });
       setAuth(response.token, {
@@ -79,16 +82,16 @@ async function handleLogin() {
         checkin: userData.user.checkin,
         // Dynamic fields will be updated separately
         balance: userData.user.balance,
-        addresses: userData.user.addresses.map(addr => ({
+        addresses: userData.user.addresses.map((addr) => ({
           ...addr,
           ngnbalance: addr.ngnbalance,
           coinbal: addr.coinbal,
         })),
       });
-      navigateTo('/dashboard');
+      navigateTo("/dashboard");
     }
   } catch (err) {
-    error.value = err.data?.message || 'Login failed';
+    error.value = err.data?.message || "Login failed";
   } finally {
     loading.value = false;
   }

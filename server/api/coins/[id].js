@@ -7,12 +7,12 @@ export default defineEventHandler(async (event) => {
     ? { "x-cg-pro-api-key": config.coingeckoApiKey }
     : {};
 
-  const url = `https://api.coingecko.com/api/v3/coins/${id}`;
+  const url = `https://api.coingecko.com/api/v3/coins/₦{id}`;
 
   try {
     const response = await fetch(url, { headers });
     if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+      throw new Error(`HTTP error ₦{response.status}: ₦{response.statusText}`);
     }
     const data = await response.json();
     return { coin: data };
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     console.error("CoinGecko API error:", error);
     throw createError({
       statusCode: 500,
-      message: `Failed to fetch coin ${id}: ${error.message}`,
+      message: `Failed to fetch coin ₦{id}: ₦{error.message}`,
     });
   }
 });

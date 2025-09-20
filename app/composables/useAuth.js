@@ -59,7 +59,7 @@ export function useAuth() {
       const response = await $fetch("/api/me", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ₦{token}`,
         },
       });
 

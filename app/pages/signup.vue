@@ -48,7 +48,10 @@
         Sign Up
       </button>
       <p v-if="error" class="error">{{ error }}</p>
-      <p class="login text-xs mx-auto">Already Have An Account? <NuxtLink to="/login" class="text-lime-500">Login</NuxtLink></p>
+      <p class="login text-xs mx-auto">
+        Already Have An Account?
+        <NuxtLink to="/login" class="text-lime-500">Login</NuxtLink>
+      </p>
     </form>
   </div>
 </template>

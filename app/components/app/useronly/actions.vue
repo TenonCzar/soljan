@@ -21,48 +21,7 @@
         >
       </p>
     </div>
-    <div class="actions flex justify-between w-full px-6">
-      <div class="send text-center flex flex-col items-center">
-        <div
-          class="border rounded-full border-blue-900 w-fit h-fit p-2 text-2xl flex items-center justify-center"
-          @click="navigateTo('/dashboard/buy')"
-        >
-          <Icon name="mdi:database-check-outline" />
-        </div>
-        <p class="tag text-xs">Buy</p>
-      </div>
-      <div class="send text-center flex flex-col items-center">
-        <div
-          class="border rounded-full border-blue-900 w-fit h-fit p-2 text-2xl flex items-center justify-center"
-          @click="navigateTo('/dashboard/buy')"
-        >
-          <Icon name="mdi:bookmark-minus-outline" />
-        </div>
-        <p class="tag text-xs">Sell</p>
-      </div>
-      <div
-        class="send text-center flex flex-col items-center"
-        @click="navigateTo('/dashboard/send')"
-      >
-        <div
-          class="border rounded-full border-blue-900 w-fit h-fit p-2 text-xl flex items-center justify-center -rotate-45"
-        >
-          <Icon name="mdi:send" />
-        </div>
-        <p class="tag text-xs">Send</p>
-      </div>
-      <div
-        class="receive text-center flex flex-col items-center"
-        @click="navigateTo('/dashboard/receive')"
-      >
-        <div
-          class="border rounded-full border-blue-900 w-fit h-fit p-2 text-xl flex items-center justify-center rotate-90"
-        >
-          <Icon name="mdi:exit-to-app" />
-        </div>
-        <p class="tag text-xs">Receive</p>
-      </div>
-    </div>
+    <AppUseronlyTransact />
 
     <div class="assets w-full px-6">
       <div class="top rubik">Assets <Icon name="mdi:elipses" /></div>
@@ -108,149 +67,13 @@
                 ₦{{ usdBalanceAmount || "0.00" }}
               </div>
               <div class="price text-xs font-thin rubik">
-                {{ usdAmount || "0" }}$
+                {{ usdAmount || "0" }}₦
               </div>
             </div>
           </div>
         </div>
 
-        <div class="crypto-assets flex flex-col gap-4 mt-4">
-          <h2 class="text-left mt-4">Crypto Balance</h2>
-          <div
-            class="btc flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
-            @click="navigateTo(`/dashboard/${coin}`)"
-          >
-            <div
-              class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
-            >
-              <img src="/images/coins/btc.svg" class="w-4 h-4" alt="bitcoin" />
-            </div>
-            <div class="name text-xs flex flex-col text-left capitalize">
-              {{ user?.addresses[2].currency }} <span>BTC</span>
-            </div>
-            <div class="numbers flex flex-col items-end ml-auto">
-              <div class="balance rubik text-sm">
-                ₦{{ user?.addresses[2].ngnbalance }}
-              </div>
-              <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[2].coinbal || "0" }}
-              </div>
-            </div>
-          </div>
-          <div
-            class="sol flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
-            @click="navigateTo(`/dashboard/${coin}`)"
-          >
-            <div
-              class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
-            >
-              <img
-                src="/images/coins/solana.svg"
-                class="w-4 h-4"
-                alt="solana"
-              />
-            </div>
-            <div class="name text-xs flex flex-col text-left capitalize">
-              {{ user?.addresses[5].currency }} <span>SOL</span>
-            </div>
-            <div class="numbers flex flex-col items-end ml-auto">
-              <div class="balance rubik text-sm">
-                ₦{{ user?.addresses[5].ngnbalance }}
-              </div>
-              <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[5].coinbal || "0" }}
-              </div>
-            </div>
-          </div>
-          <div
-            class="tether flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
-            @click="navigateTo(`/dashboard/${coin}`)"
-          >
-            <div
-              class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
-            >
-              <img
-                src="/images/coins/tether.svg"
-                class="w-4 h-4"
-                alt="tether"
-              />
-            </div>
-            <div class="name text-xs flex flex-col text-left">
-              Tether <span>USDT</span>
-            </div>
-            <div class="numbers flex flex-col items-end ml-auto">
-              <div class="balance rubik text-sm">
-                ₦{{ user?.addresses[3].ngnbalance }}
-              </div>
-              <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[3].coinbal || "0" }}
-              </div>
-            </div>
-          </div>
-          <div
-            class="eth flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
-            @click="navigateTo(`/dashboard/${coin}`)"
-          >
-            <div
-              class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
-            >
-              <img src="/images/coins/eth.svg" class="w-4 h-4" alt="eth" />
-            </div>
-            <div class="name text-xs flex flex-col text-left">
-              Ethereum <span>{{user?.addresses[0].currency}}</span>
-            </div>
-            <div class="numbers flex flex-col items-end ml-auto">
-              <div class="balance rubik text-sm">
-                ₦{{ user?.addresses[0].ngnbalance || "0.00" }}
-              </div>
-              <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[0].coinbal || "10" }}
-              </div>
-            </div>
-          </div>
-          <div
-            class="bnb flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
-            @click="navigateTo(`/dashboard/${coin}`)"
-          >
-            <div
-              class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
-            >
-              <img src="/images/coins/bnb.svg" class="w-4 h-4" alt="bnb" />
-            </div>
-            <div class="name text-xs flex flex-col text-left">
-              Bnb <span>BNB</span>
-            </div>
-            <div class="numbers flex flex-col items-end ml-auto">
-              <div class="balance rubik text-sm">
-                ₦{{ user?.addresses[1].ngnbalance || "0.00" }}
-              </div>
-              <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[1].coinbal || "10" }}
-              </div>
-            </div>
-          </div>
-          <div
-            class="tron flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
-            @click="navigateTo(`/dashboard/${coin}`)"
-          >
-            <div
-              class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
-            >
-              <img src="/images/coins/usdc.svg" class="w-4 h-4" alt="usdc" />
-            </div>
-            <div class="name text-xs flex flex-col text-left capitalize">
-              {{ user?.addresses[6].currency }} <span>USDC</span>
-            </div>
-            <div class="numbers flex flex-col items-end ml-auto">
-              <div class="balance rubik text-sm">
-                ₦{{user?.addresses[6].ngnbalance || "0.00"}}
-              </div>
-              <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[6].coinbal || "0" }}
-              </div>
-            </div>
-          </div>
-        </div>
+        <AppUseronlySuported class="crypto-assets" />
       </div>
     </div>
   </div>
@@ -264,7 +87,7 @@ const loading = ref(false);
 // import { debounce } from 'lodash-es';
 // const refreshBalances = debounce(updateDynamicFields, 1000);
 
-useRequireAuth(); // Ensures auth check and periodic validation
+useRequireAuth();
 const { user, updateDynamicFields } = useAuth();
 
 onMounted(async () => {
