@@ -1,16 +1,11 @@
 // wallet.js
 import { ethers } from "ethers";
 import { Keypair } from "@solana/web3.js";
-import * as bitcoin from "bitcoinjs-lib";
-import * as ecc from "tiny-secp256k1";
-import { ECPairFactory } from "ecpair";
+import { Ed25519Keypair } from "@mysten/sui.js/keypairs/ed25519";
 import fetch from "node-fetch";
 
 // Polyfill fetch
 globalThis.fetch = fetch;
-
-// Create ECPair instance
-const ECPair = ECPairFactory(ecc);
 
 export async function generateAddresses() {
   const addresses = {};
@@ -27,17 +22,10 @@ export async function generateAddresses() {
     const solKeypair = Keypair.generate();
     addresses.solana = solKeypair.publicKey.toBase58();
 
-    // Bitcoin (mainnet)
-const btcNetwork = bitcoin.networks.bitcoin;
-const keyPair = ECPair.makeRandom({ network: btcNetwork });
-
-const { address: btcAddress } = bitcoin.payments.p2pkh({
-  pubkey: Buffer.from(keyPair.publicKey), // ✅ fix here
-  network: btcNetwork,
-});
-
-addresses.bitcoin = btcAddress;
-addresses.btc_wif = keyPair.toWIF();
+    // Sui (Ed25519)
+    const suiKeypair = new Ed25519Keypair();
+    const suiAddress = suiKeypair.getPublicKey().toSuiAddress();
+    addresses.sui = suiAddress;
 
     return addresses;
   } catch (error) {

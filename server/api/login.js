@@ -3,26 +3,26 @@ import jwt from "jsonwebtoken";
 import { db } from "../utils/db";
 
 export default defineEventHandler(async (event) => {
-  const { email, password } = await readBody(event);
+  const { username, password } = await readBody(event);
 
-  if (!email || !password) {
+  if (!username || !password) {
     throw createError({
       statusCode: 400,
-      message: "Email and password are required",
+      message: "Username and password are required",
     });
   }
 
   try {
     // Query user from Turso
     const { rows } = await db.execute({
-      sql: "SELECT id, email, password FROM users WHERE email = ?",
-      args: [email],
+      sql: "SELECT id, email, password FROM users WHERE username = ?",
+      args: [username],
     });
 
     if (rows.length === 0) {
       throw createError({
         statusCode: 401,
-        message: "Invalid email or password",
+        message: "Invalid username or password",
       });
     }
 
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     if (!passwordMatch) {
       throw createError({
         statusCode: 401,
-        message: "Invalid email or password",
+        message: "Incorrect password",
       });
     }
 

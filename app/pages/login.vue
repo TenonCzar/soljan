@@ -9,11 +9,11 @@
     >
       <div>
         <label class="flex flex-col gap-2 rounded">
-          Email:
+          Username:
           <input
-            v-model="form.email"
+            v-model="form.username"
             class="bg-transparent border p-2 outline-none flex-1"
-            type="email"
+            type="text"
             required
           />
         </label>
@@ -34,7 +34,7 @@
         :disabled="loading"
         class="bg-blue-500 text-white p-2 rounded mt-3 cursor-pointer"
       >
-        Login
+        {{  loading ? "Logging in..." : "Login" }}
       </button>
       <p v-if="error" class="error">{{ error }}</p>
       <p class="login text-xs mx-auto">
@@ -49,7 +49,7 @@
 import { ref } from "vue";
 import { useAuth } from "~/composables/useAuth";
 
-const form = ref({ email: "", password: "" });
+const form = ref({ username: "", password: "" });
 const loading = ref(false);
 const error = ref("");
 const { setAuth, updateDynamicFields } = useAuth();
@@ -67,7 +67,7 @@ async function handleLogin() {
       const userData = await $fetch("/api/me", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ₦{response.token}`,
+          Authorization: `Bearer ${response.token}`,
         },
       });
       setAuth(response.token, {
@@ -82,7 +82,7 @@ async function handleLogin() {
         checkin: userData.user.checkin,
         // Dynamic fields will be updated separately
         balance: userData.user.balance,
-        addresses: userData.user.addresses.map((addr) => ({
+        addressesData: userData.user.addresses.map((addr) => ({
           ...addr,
           ngnbalance: addr.ngnbalance,
           coinbal: addr.coinbal,

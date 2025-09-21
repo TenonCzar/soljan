@@ -4,7 +4,7 @@
   >
     <div class="balance">
       <div class="amount relative rubik text-4xl">
-        {{ user?.balance || "0.00"
+        {{ Number(user?.balance).toLocaleString() || "0.00"
         }}<span
           class="currency text-sm absolute disabled:text-ellipsis disabled:text-xs"
           :disabled="loading"
@@ -43,14 +43,14 @@
             </div>
             <div class="numbers flex flex-col items-end ml-auto">
               <div class="balance rubik text-sm">
-                ₦{{ nairaBalanceAmount || "0.00" }}
+                ₦{{ Number(user?.balance).toLocaleString() || "0.00" }}
               </div>
               <div class="price text-xs font-thin rubik">
-                {{ nairaAmount || "0" }}₦
+                {{ Number(user?.balance).toLocaleString() || "0" }}
               </div>
             </div>
           </div>
-          <div
+          <!-- <div
             class="usd flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg cursor-pointer hover:bg-white/30 cursor-shadow-md"
             @click="navigateTo('/dashboard/usd')"
           >
@@ -70,7 +70,7 @@
                 {{ usdAmount || "0" }}₦
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
 
         <AppUseronlySuported class="crypto-assets" />

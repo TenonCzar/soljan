@@ -3,13 +3,13 @@ import { db, initDB } from "../utils/db";
 import { generateAddresses } from "../utils/wallets";
 
 export default defineEventHandler(async (event) => {
-  const { email, password, fullName } = await readBody(event);
+  const { email, password, fullName, userName } = await readBody(event);
 
   // Validate input
-  if (!email || !password || !fullName) {
+  if (!email || !password || !fullName || !userName || !userName.trim()) {
     throw createError({
       statusCode: 400,
-      message: "Email and password are required",
+      message: "All fields are required",
     });
   }
 
@@ -22,8 +22,8 @@ export default defineEventHandler(async (event) => {
 
     // Insert user into database
     const userResult = await db.execute({
-      sql: "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-      args: [fullName, email, hashedPassword],
+      sql: "INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)",
+      args: [fullName, userName, email, hashedPassword],
     });
 
     const userId = userResult.lastInsertRowid;
@@ -46,12 +46,12 @@ export default defineEventHandler(async (event) => {
     if (error.code === "SQLITE_CONSTRAINT") {
       throw createError({
         statusCode: 400,
-        message: "Email already exists",
+        message: "Email or Username already exists",
       });
     }
     throw createError({
       statusCode: 500,
-      message: `Internal server error ₦{error.message}`,
+      message: `Internal server error ${error.message}`,
     });
   }
 });

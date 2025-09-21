@@ -13,16 +13,16 @@ useRequireAuth();
 
 // Example: map IDs to user.address index
 const idToAddressIndex = {
-  bitcoin: 2, // adjust based on your user?.addresses structure
+  // bitcoin: 2,
   ethereum: 0,
   solana: 5,
-  tether: 3,
-  "usd-coin": 6,
-  binancecoin: 1,
-  tron: 4,
-  sui: 7,
+  tether: 4,
+  "usd-coin": 1,
+  binancecoin: 2,
+  // tron: 4,
+  sui: 3,
 };
-
+const idx = idToAddressIndex[coinId];
 onMounted(() => {
   const ws = new WebSocket("wss://soljan.onrender.com");
 
@@ -39,7 +39,7 @@ onMounted(() => {
       coin.value = match;
 
       // match balance from user.addresses
-      const idx = idToAddressIndex[coinId];
+
       if (typeof idx !== "undefined" && user?.addresses?.[idx]) {
         userBalance.value = user?.addresses[idx];
       }
@@ -49,6 +49,8 @@ onMounted(() => {
 </script>
 
 <template>
+
+  <AppBackHeader />
   <div
     v-if="coin"
     class="p-6 min-h-screen bg-use text-white flex flex-col gap-6"
@@ -63,36 +65,29 @@ onMounted(() => {
       </h1>
     </div>
 
-    <div class="actionBtn w-fit mx-auto flex items-center gap-6">
-      <button class="flex items-center p-2 gap-2 text-xs border rounded-full">
-        Receive <Icon name="mdi:call-received" class="text-sm" />
-      </button>
-      <button class="flex items-center p-2 gap-2 text-xs border rounded-full">
-        Send <Icon name="mdi:send-outline" />
-      </button>
-      <button class="flex items-center p-2 gap-2 text-xs border rounded-full">
-        Convert <Icon name="mdi:swap-horizontal-variant" class="text-sm" />
-      </button>
-    </div>
+    <AppUseronlyTransact />
 
-    <div class="mt-6 p-4 rounded">
+    <div class="mt-6 p-4 rounded flex justify-between">
+
+      <div><p class="font-semibold">Current Price:</p>₦{{ coin.current_price.toLocaleString() }}</div>
+      <div class="text-right">
       <h2 class="font-semibold">Your HODL</h2>
-      <div>
-        {{ user?.addresses[idToAddressIndex[coinId]].coinbal }}
-        {{ coin.symbol }}
         <p>
-          ₦{{ user?.addresses[idToAddressIndex[coinId]].ngnbalance }} <br />
+          {{ Number(user?.addresses[idToAddressIndex[coinId]].coinbal).toLocaleString() }}
+          {{ coin.symbol }}
+        </p>
+        <p class="text-xs text-gray-400">
+          ₦{{ Number(user?.addresses[idToAddressIndex[coinId]].ngnbalance).toLocaleString() }}
         </p>
       </div>
     </div>
 
     <!-- Market Data -->
-    <div class="mt-4 grid grid-cols-2 gap-4 text-sm">
-      <div>Current Price: ₦{{ coin.current_price }}</div>
-      <div>Market Cap: ₦{{ coin.market_cap.toLocaleString() }}</div>
-      <div>24h High: ₦{{ coin.high_24h }}</div>
-      <div>24h Low: ₦{{ coin.low_24h }}</div>
-      <div>24h Change: {{ coin.price_change_percentage_24h.toFixed(2) }}%</div>
+    <div class="mt-4 flex flex-wrap justify-between gap-4 text-sm">
+      <div class="flex flex-col">Market Cap: <span>₦{{ coin.market_cap.toLocaleString() }}</span></div>
+      <div class="flex flex-col">24h High: <span>₦{{ coin.high_24h.toLocaleString() }}</span></div>
+      <div class="flex flex-col">24h Low: <span>₦{{ coin.low_24h.toLocaleString() }}</span></div>
+      <div class="flex flex-col">24h Change: <span>{{ coin.price_change_percentage_24h.toFixed(2) }}%</span></div>
     </div>
 
     <!-- Chart -->
@@ -101,5 +96,16 @@ onMounted(() => {
     </div>
   </div>
 
-  <div v-else class="p-6 text-gray-500">Loading {{ coinId }} data...</div>
+  <div v-else class="p-6 text-gray-500 flex flex-col items-center gap-4">
+    <div class="img rounded-full h-20 w-20 bg-gray-400"></div>
+    <div class="coinName">{{ coinId }}</div>
+    <h2 class="font-semibold">Your HODL</h2>
+    <div>
+      {{ user?.addresses[idToAddressIndex[coinId]].coinbal }}
+      <!-- {{ coin.symbol }} -->
+      <p>₦{{ user?.addresses[idToAddressIndex[coinId]].ngnbalance }}</p>
+    </div>
+
+    <AppUseronlyTransact />
+  </div>
 </template>

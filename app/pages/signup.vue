@@ -20,6 +20,17 @@
       </div>
       <div>
         <label class="flex flex-col gap-2 rounded"
+          >Username:
+          <input
+            v-model="form.userName"
+            class="bg-transparent border p-2 outline-none flex-1"
+            type="text"
+            required
+          />
+        </label>
+      </div>
+      <div>
+        <label class="flex flex-col gap-2 rounded"
           >Email:
           <input
             v-model="form.email"
@@ -40,6 +51,7 @@
           />
         </label>
       </div>
+      <p v-if="error" class="error">{{ error }}</p>
       <button
         type="submit"
         :disabled="loading"
@@ -47,7 +59,6 @@
       >
         Sign Up
       </button>
-      <p v-if="error" class="error">{{ error }}</p>
       <p class="login text-xs mx-auto">
         Already Have An Account?
         <NuxtLink to="/login" class="text-lime-500">Login</NuxtLink>
@@ -57,7 +68,7 @@
 </template>
 
 <script setup>
-const form = ref({ fullName: "", email: "", password: "" });
+const form = ref({ fullName: "", userName: "", email: "", password: "" });
 const loading = ref(false);
 const error = ref("");
 

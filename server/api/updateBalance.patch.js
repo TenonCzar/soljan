@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { db } from "../utils/db";
 
 const COIN_ID_TO_CURRENCY = {
-  bitcoin: "bitcoin",
+  sui: "sui",
   ethereum: "eth",
   solana: "solana",
   tether: "usdt",
@@ -19,10 +19,7 @@ export default defineEventHandler(async (event) => {
 
   const token = authHeader.replace("Bearer ", "");
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "your-secret-key"
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const body = await readBody(event);
     const { coinId, coinbal, currentPrice } = body;
 
@@ -56,6 +53,20 @@ export default defineEventHandler(async (event) => {
       args: [coinbal, ngnbalance, address.id],
     });
 
+    // 🔑 Calculate total balance in NGN across all addresses
+    const totalBalanceResult = await db.execute({
+      sql: "SELECT SUM(CAST(ngnbalance AS FLOAT)) AS total FROM addresses WHERE user_id = ?",
+      args: [decoded.userId],
+    });
+
+    const totalBalance = totalBalanceResult.rows[0]?.total || 0;
+
+    // Optionally also update the users table with the latest total balance
+    await db.execute({
+      sql: "UPDATE users SET balance = ? WHERE id = ?",
+      args: [totalBalance, decoded.userId],
+    });
+
     // Fetch updated user + addresses
     const userResult = await db.execute({
       sql: "SELECT id, email, name, username, balance, account FROM users WHERE id = ?",
@@ -76,7 +87,7 @@ export default defineEventHandler(async (event) => {
         email: user.email,
         name: user.name,
         username: user.username,
-        balance: user.balance || 0,
+        balance: totalBalance || 0,
         account: user.account || "STANDARD",
         addresses,
         last_checkin: new Date().toISOString(),

@@ -5,12 +5,13 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const coins = [
-  { id: "bitcoin", symbol: "BTC", img: "/images/coins/btc.svg", idx: 2 },
+  // { id: "bitcoin", symbol: "BTC", img: "/images/coins/btc.svg", idx: 2 },
   { id: "solana", symbol: "SOL", img: "/images/coins/solana.svg", idx: 5 },
-  { id: "tether", symbol: "USDT", img: "/images/coins/tether.svg", idx: 3 },
+  { id: "sui", symbol: "SUI", img: "/images/coins/sui.svg", idx: 3 },
+  { id: "tether", symbol: "USDT", img: "/images/coins/tether.svg", idx: 4 },
+  { id: "usd-coin", symbol: "USDC", img: "/images/coins/usdc.svg", idx: 1 },
   { id: "ethereum", symbol: "ETH", img: "/images/coins/eth.svg", idx: 0 },
-  { id: "binancecoin", symbol: "BNB", img: "/images/coins/bnb.svg", idx: 1 },
-  { id: "usd-coin", symbol: "USDC", img: "/images/coins/usdc.svg", idx: 6 },
+  { id: "binancecoin", symbol: "BNB", img: "/images/coins/bnb.svg", idx: 2 },
 ];
 
 const user = useState("user"); 
@@ -49,7 +50,7 @@ async function updateBalance(idx, coinId, coinbal, price) {
   animateBalance(idx, ngnbalance);
 
   // Save to localStorage
-  localStorage.setItem("user", JSON.stringify(user.value));
+  localStorage.setItem("auth_user", JSON.stringify(user.value));
 
   // Silent backend update
   try {
@@ -113,7 +114,7 @@ onBeforeUnmount(() => {
       v-for="coin in coins"
       :key="coin.id"
       class="flex gap-2 items-center bg-gray-500/20 p-4 rounded-lg hover:bg-white/30 cursor-pointer cursor-shadow-md"
-      @click="navigateTo(`/dashboard/₦{coin.id}`)"
+      @click="navigateTo(`/dashboard/${coin.id}`)"
     >
       <div
         class="img bg-white p-2 rounded-full flex items-center justify-center w-fit"
