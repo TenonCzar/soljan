@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     // Query addresses
     const addressResult = await db.execute({
-      sql: "SELECT currency, address, ngnbalance, coinbal FROM addresses WHERE user_id = ?",
+      sql: "SELECT currency, address, network, ngnbalance, coinbal FROM addresses WHERE user_id = ?",
       args: [decoded.userId],
     });
 

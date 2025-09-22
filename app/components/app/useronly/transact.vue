@@ -4,7 +4,7 @@
       class="flex items-center p-2 gap-2 text-xs border rounded-full cursor-pointer"
       @click="userAction('Receive')"
     >
-      Receive <Icon name="mdi:call-received" class="text-sm" action="send" />
+      Receive <Icon name="mdi:call-received" class="text-sm" />
     </button>
     <button
       class="flex items-center p-2 gap-2 text-xs border rounded-full cursor-pointer"
@@ -19,11 +19,13 @@
       Convert <Icon name="mdi:swap-horizontal-variant" class="text-sm" />
     </button>
   </div>
+
+  <!-- Modal -->
   <div
-    class="min-h-screen w-full flex flex-col absolute top-0 left-0 bg-use"
-    v-if="openModal"
+    class="min-h-screen w-full flex flex-col absolute top-0 left-0 bg-use z-50"
+    v-if="modal"
   >
-    <h2 class="text-lg font-semibold mb-4">{{ action.value }}</h2>
+    <h2 class="text-lg font-semibold mb-4">{{ action }}</h2>
     <p class="mb-4">Select coin:</p>
 
     <ul class="space-y-2 overflow-y-auto">
@@ -39,10 +41,18 @@
           <div class="right flex items-center gap-2">
             <div class="numbers flex flex-col items-end ml-auto">
               <div class="balance rubik text-sm">
-                ₦{{ user?.addresses[coin.idx].ngnbalance || "0.00" }}
+                ₦{{
+                  Number(
+                    user?.addresses[coin.idx].ngnbalance
+                  ).toLocaleString() || "0.00"
+                }}
               </div>
               <div class="price text-xs font-thin rubik">
-                {{ user?.addresses[coin.idx].coinbal || "0" }} {{ coin.symbol }}
+                {{
+                  Number(user?.addresses[coin.idx].coinbal).toLocaleString() ||
+                  "0"
+                }}
+                {{ coin.symbol }}
               </div>
             </div>
             <Icon name="mdi:chevron-right" class="text-sm" />
@@ -61,29 +71,46 @@
 import { ref } from "vue";
 import { useAuth } from "~/composables/useAuth";
 import { useRequireAuth } from "~/composables/useRequireAuth";
-const openModal = ref(false);
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
+const route = useRoute();
+
+const modal = ref(false);
+const action = ref("");
 const user = useState("user");
+
 const closeModal = () => {
-  openModal.value = false;
+  modal.value = false;
 };
-useRequireAuth();
-const selectCoin = (coin) => {
-  console.log("Selected coin:", coin);
-  // You can add further logic here, e.g., navigate to a transaction page or open another modal
+const openModal = () => {
+  modal.value = true;
 };
 
-const action = ref("");
 const userAction = (act) => {
   action.value = act;
-  openModal.value = true;
+  openModal();
+};
+
+useRequireAuth();
+function navigateTo(url) {
+  router.push(url);
+}
+const selectCoin = (coin) => {
+  router.push(
+    coin.id
+      ? `/dashboard/${action.value.toLowerCase()}/${coin.id}`
+      : `/dashboard/ngn/${action.value.toLowerCase()}`
+  );
+  closeModal();
 };
 
 const coins = [
-  { id: "bitcoin", symbol: "BTC", img: "/images/coins/btc.svg", idx: 2 },
-  { id: "solana", symbol: "SOL", img: "/images/coins/solana.svg", idx: 5 },
-  { id: "tether", symbol: "USDT", img: "/images/coins/tether.svg", idx: 3 },
-  { id: "ethereum", symbol: "ETH", img: "/images/coins/eth.svg", idx: 0 },
-  { id: "binancecoin", symbol: "BNB", img: "/images/coins/bnb.svg", idx: 1 },
+  { id: "solana", symbol: "SOL", img: "/images/coins/solana.svg", idx: 3 },
+  { id: "sui", symbol: "SUI", img: "/images/coins/sui.svg", idx: 4 },
+  { id: "tether", symbol: "USDT", img: "/images/coins/tether.svg", idx: 8 },
+  { id: "tron", symbol: "TRX", img: "/images/coins/tron.svg", idx: 5 },
   { id: "usd-coin", symbol: "USDC", img: "/images/coins/usdc.svg", idx: 6 },
+  { id: "ethereum", symbol: "ETH", img: "/images/coins/eth.svg", idx: 2 },
+  { id: "binancecoin", symbol: "BNB", img: "/images/coins/bnb.svg", idx: 1 },
 ];
 </script>

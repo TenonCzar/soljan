@@ -40,8 +40,8 @@ export default defineEventHandler(async (event) => {
     // Generate JWT
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || "your-secret-key", // Use env var in production
-      { expiresIn: "1h" } // Token expires in 1 hour
+      process.env.JWT_SECRET || "your-secret-key",
+      { expiresIn: "1h" }
     );
 
     return { success: true, token, message: "Login successful" };

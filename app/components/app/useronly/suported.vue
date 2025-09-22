@@ -5,13 +5,13 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const coins = [
-  // { id: "bitcoin", symbol: "BTC", img: "/images/coins/btc.svg", idx: 2 },
-  { id: "solana", symbol: "SOL", img: "/images/coins/solana.svg", idx: 5 },
-  { id: "sui", symbol: "SUI", img: "/images/coins/sui.svg", idx: 3 },
-  { id: "tether", symbol: "USDT", img: "/images/coins/tether.svg", idx: 4 },
-  { id: "usd-coin", symbol: "USDC", img: "/images/coins/usdc.svg", idx: 1 },
-  { id: "ethereum", symbol: "ETH", img: "/images/coins/eth.svg", idx: 0 },
-  { id: "binancecoin", symbol: "BNB", img: "/images/coins/bnb.svg", idx: 2 },
+  { id: "solana", symbol: "SOL", img: "/images/coins/solana.svg", idx: 3 },
+  { id: "sui", symbol: "SUI", img: "/images/coins/sui.svg", idx: 4 },
+  { id: "tether", symbol: "USDT", img: "/images/coins/tether.svg", idx: 8 },
+  { id: "tron", symbol: "TRX", img: "/images/coins/tron.svg", idx: 5 },
+  { id: "usd-coin", symbol: "USDC", img: "/images/coins/usdc.svg", idx: 6 },
+  { id: "ethereum", symbol: "ETH", img: "/images/coins/eth.svg", idx: 2 },
+  { id: "binancecoin", symbol: "BNB", img: "/images/coins/bnb.svg", idx: 1 },
 ];
 
 const user = useState("user"); 

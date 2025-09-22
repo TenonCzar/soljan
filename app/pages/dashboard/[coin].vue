@@ -5,13 +5,13 @@ import { useRequireAuth } from "~/composables/useRequireAuth";
 import { useAuth } from "~/composables/useAuth";
 
 const route = useRoute();
-const coinId = route.params.coin; // e.g. "bitcoin", "usd-coin", "binancecoin"
+const coinId = route.params.coin; 
 const coin = ref(null);
 const userBalance = ref(null);
 const user = useState("user");
 useRequireAuth();
 
-// Example: map IDs to user.address index
+// map IDs to user.address index
 const idToAddressIndex = {
   // bitcoin: 2,
   ethereum: 0,
@@ -49,7 +49,6 @@ onMounted(() => {
 </script>
 
 <template>
-
   <AppBackHeader />
   <div
     v-if="coin"
@@ -68,26 +67,57 @@ onMounted(() => {
     <AppUseronlyTransact />
 
     <div class="mt-6 p-4 rounded flex justify-between">
-
-      <div><p class="font-semibold">Current Price:</p>₦{{ coin.current_price.toLocaleString() }}</div>
+      <div>
+        <p class="font-semibold">Current Price:</p>
+        ₦{{ coin.current_price.toLocaleString() }}
+      </div>
       <div class="text-right">
-      <h2 class="font-semibold">Your HODL</h2>
+        <h2 class="font-semibold">Your HODL</h2>
         <p>
-          {{ Number(user?.addresses[idToAddressIndex[coinId]].coinbal).toLocaleString() }}
+          {{
+            Number(
+              user?.addresses[idToAddressIndex[coinId]].coinbal
+            ).toLocaleString()
+          }}
           {{ coin.symbol }}
         </p>
         <p class="text-xs text-gray-400">
-          ₦{{ Number(user?.addresses[idToAddressIndex[coinId]].ngnbalance).toLocaleString() }}
+          ₦{{
+            Number(
+              user?.addresses[idToAddressIndex[coinId]].ngnbalance
+            ).toLocaleString()
+          }}
         </p>
       </div>
     </div>
 
     <!-- Market Data -->
-    <div class="mt-4 flex flex-wrap justify-between gap-4 text-sm">
-      <div class="flex flex-col">Market Cap: <span>₦{{ coin.market_cap.toLocaleString() }}</span></div>
-      <div class="flex flex-col">24h High: <span>₦{{ coin.high_24h.toLocaleString() }}</span></div>
-      <div class="flex flex-col">24h Low: <span>₦{{ coin.low_24h.toLocaleString() }}</span></div>
-      <div class="flex flex-col">24h Change: <span>{{ coin.price_change_percentage_24h.toFixed(2) }}%</span></div>
+    <div class="flex flex-wrap justify-between gap-4 text-sm">
+      <div class="hold flex justify-between w-full ">
+        <div class="flex flex-col">
+          Market Cap:
+          <span class="text-xs">₦{{ coin.market_cap.toLocaleString() }}</span>
+        </div>
+        <div class="flex flex-col">
+          24h Trading Volume:
+          <span class="text-xs">₦{{ coin.total_volume.toLocaleString() }}</span>
+        </div>
+      </div>
+      <hr class="bg-gray-600 w-full" />
+      <div class="flex flex-col">
+        24h High:
+        <span class="text-xs">₦{{ coin.high_24h.toLocaleString() }}</span>
+      </div>
+      <div class="flex flex-col">
+        24h Low:
+        <span class="text-xs">₦{{ coin.low_24h.toLocaleString() }}</span>
+      </div>
+      <div class="flex flex-col">
+        24h Change:
+        <span class="text-xs"
+          >{{ coin.price_change_percentage_24h.toFixed(2) }}%</span
+        >
+      </div>
     </div>
 
     <!-- Chart -->

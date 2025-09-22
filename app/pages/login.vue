@@ -12,14 +12,14 @@
           Username:
           <input
             v-model="form.username"
-            class="bg-transparent border p-2 outline-none flex-1"
+            class="bg-transparent border p-2 outline-none flex-1 lowercase"
             type="text"
             required
           />
         </label>
       </div>
       <div>
-        <label class="flex flex-col gap-2 rounded">
+        <label class="flex flex-col gap-2 rounded relative">
           Password:
           <input
             v-model="form.password"
@@ -27,6 +27,7 @@
             type="password"
             required
           />
+          <Icon name="mdi:eye-off-outline" class="absolute right-4 top-11 cursor-pointer" @click="togglePasswordVisibility" />
         </label>
       </div>
       <button
@@ -54,16 +55,26 @@ const loading = ref(false);
 const error = ref("");
 const { setAuth, updateDynamicFields } = useAuth();
 
+const togglePasswordVisibility = () => {
+  const passwordInput = document.querySelector('input[type="password"]');
+  if (passwordInput) {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+    } else {
+      passwordInput.type = "password";
+    }
+  }
+};
+
 async function handleLogin() {
   loading.value = true;
   error.value = "";
   try {
     const response = await $fetch("/api/login", {
       method: "POST",
-      body: form.value,
+      body: { username: form.value.username.toLowerCase().trim(), password: form.value.password },
     });
     if (response.success && response.token) {
-      // Fetch user data to get static fields
       const userData = await $fetch("/api/me", {
         method: "GET",
         headers: {
